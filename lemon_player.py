@@ -6,6 +6,7 @@ import signal
 import pygame
 import time
 import os
+import subprocess
 from pygame import mixer
 from pygame.locals import *
 from random import randint
@@ -67,7 +68,7 @@ class Player:
         return self.curr_name
 
     def get_name(self):
-        print self.curr_name.split('/')[-1].split('.')[0]
+        #print self.curr_name.split('/')[-1].split('.')[0]
         return self.curr_name.split('/')[-1].split('.')[0]
 
     def get_busy(self):
@@ -115,19 +116,19 @@ class ControlPause:
         pygame.draw.rect(screen, COLOR_WHITE, r_position)
 
     def on_click(self):
-        print 'ControlPause on_click'
+        #print 'ControlPause on_click'
         self.manager.forward('show', name='ctl_play')
         self.player.pause()
 
     def move_in(self):
         if self.inflg: return
         self.inflg = True
-        print 'ControlPause move_in'
+        #print 'ControlPause move_in'
         self.color = COLOR_LIGHTGREEN_C
 
     def move_out(self):
         self.inflg = False
-        print 'ControlPause move_out'
+        #print 'ControlPause move_out'
         self.color = COLOR_LIGHTGREEN
 
     def is_in(self, position):
@@ -156,19 +157,20 @@ class ControlPlay:
         pass
 
     def on_click(self):
-        print 'ControlPlay on_click'
+        #print 'ControlPlay on_click'
         self.player.play()
         self.manager.forward('set_content', name='ctl_txt_name', args=self.player.get_name())
+        #self.manager.forward('notify', name='ctl_txt_name')
         self.hide = True
 
     def move_in(self):
         if self.inflg: return
         self.inflg = True
-        print 'ControlPlay move_in'
+        #print 'ControlPlay move_in'
 
     def move_out(self):
         self.inflg = False
-        print 'ControlPlay move_out'
+        #print 'ControlPlay move_out'
 
     def is_in(self, position):
         if self.hide: return False
@@ -201,20 +203,20 @@ class ControlNext:
         pygame.draw.polygon(screen, self.color, r_pos_list)
 
     def on_click(self):
-        print 'ControlNext on_click'
+        #print 'ControlNext on_click'
         self.player.stop()
         self.manager.forward('on_click', name='ctl_play')
 
     def move_in(self):
         if self.inflg: return
         self.inflg = True
-        print 'ControlNext move_in'
-        print 'ControlNext move_out'
+        #print 'ControlNext move_in'
+        #print 'ControlNext move_out'
         self.color = COLOR_GRAY
 
     def move_out(self):
         self.inflg = False
-        print 'ControlNext move_out'
+        #print 'ControlNext move_out'
         self.color = COLOR_BLACK
 
     def is_in(self, position):
@@ -243,16 +245,16 @@ class ControlProgressBar:
         pygame.draw.rect(screen, COLOR_GRAY, m_position, 1)
 
     def on_click(self):
-        print 'ControlProgressBar on_click'
+        #print 'ControlProgressBar on_click'
 
     def move_in(self):
         if self.inflg: return
         self.inflg = True
-        print 'ControlProgressBar move_in'
+        #print 'ControlProgressBar move_in'
 
     def move_out(self):
         self.inflg = False
-        print 'ControlProgressBar move_out'
+        #print 'ControlProgressBar move_out'
 
     def is_in(self, position):
         if self.hide: return False
@@ -285,18 +287,28 @@ class ControlText:
         #pygame.draw.rect(screen, COLOR_BLACK, m_position, 1)
         text = self.font.render(self.content, True, COLOR_BLACK)
         screen.blit(text, (self.x, self.y+(self.h-18)/2))
+        pygame.display.set_caption(self.content)
+
+    def notify(self):
+        return
+        subprocess.call([
+            'notify-send',
+            '-i',
+            '',
+            self.content,
+            ''])
 
     def on_click(self):
-        print 'ControlText on_click'
+        #print 'ControlText on_click'
 
     def move_in(self):
         if self.inflg: return
         self.inflg = True
-        print 'ControlText move_in'
+        #print 'ControlText move_in'
 
     def move_out(self):
         self.inflg = False
-        print 'ControlText move_out'
+        #print 'ControlText move_out'
 
     def is_in(self, position):
         if self.hide: return False
